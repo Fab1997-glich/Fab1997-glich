@@ -1,0 +1,51 @@
+import random
+import unicodedata
+
+def remover_acentos(texto):
+    return ''.join(
+        c for c in unicodedata.normalize('NFD', texto)
+        if unicodedata.category(c) != 'Mn'
+    )
+
+def jogo_da_forca():
+    while True:
+        palavras = ["python", "desenvolvimento", "inteligencia", "computador", "programacao"]
+        palavra_secreta = random.choice(palavras)
+        palavra_secreta_normalizada = remover_acentos(palavra_secreta.lower())
+        letras_descobertas = ["_" for _ in palavra_secreta]
+        tentativas = 6
+
+        print("\nBem-vindo ao Jogo da Forca!")
+
+        while tentativas > 0 and "_" in letras_descobertas:
+            print("\nPalavra: ", " ".join(letras_descobertas))
+            print(f"Tentativas restantes: {tentativas}")
+            letra = input("Digite uma letra: ").lower()
+
+            if len(letra) != 1 or not letra.isalpha():
+                print("Por favor, digite apenas uma letra válida.")
+                continue
+
+            letra_normalizada = remover_acentos(letra)
+
+            if letra_normalizada in palavra_secreta_normalizada:
+                for i, char in enumerate(palavra_secreta_normalizada):
+                    if char == letra_normalizada:
+                        letras_descobertas[i] = palavra_secreta[i]
+                print(f"Boa! A letra '{letra}' está na palavra.")
+            else:
+                tentativas -= 1
+                print(f"Errou! A letra '{letra}' não está na palavra.")
+
+        if "_" not in letras_descobertas:
+            print("\nParabéns! Você adivinhou a palavra: ", palavra_secreta)
+        else:
+            print("\nVocê perdeu! A palavra era: ", palavra_secreta)
+
+        jogar_novamente = input("Deseja jogar novamente? (s/n): ").lower()
+        if jogar_novamente != "s":
+            print("Obrigado por jogar! Até a próxima.")
+            break
+
+if __name__ == "__main__":
+    jogo_da_forca()
